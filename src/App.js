@@ -49,7 +49,6 @@ export default function App() {
       {showAddTask && <AddTask onAdd={addTask} />}
       {tasks.length > 0 ? (
         <Tasks
-
           tasks={tasks}
           onDelete={deleteTask}
           onReminder={toggleReminder}
