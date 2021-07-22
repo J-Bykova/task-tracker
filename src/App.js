@@ -1,4 +1,4 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import Header from "./components/Header";
 import Tasks from "./components/Tasks";
 import AddTask from "./components/AddTask";
@@ -6,27 +6,21 @@ import AddTask from "./components/AddTask";
 
 export default function App() {
   const [showAddTask, setShowAddTask] = useState(false);
-  const [tasks, setTasks] = useState([
-      {
-        id: 1,
-        text: 'Doctor Appointment',
-        day: 'Feb 5th at 2:30pm',
-        reminder: true,
-      },
-      {
-        id: 2,
-        text: 'Meting at School',
-        day: 'Feb 6th at 1:30pm',
-        reminder: true,
-      },
-      {
-        id: 3,
-        text: 'Food Shopping',
-        day: 'Feb 7th at 2:30pm',
-        reminder: false,
-      },
-    ]
-  );
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    const getTasks = async () => {
+      const taskFromServer = await fetchTasks();
+      setTasks(taskFromServer);
+    }
+    getTasks();
+  }, [])
+
+  const fetchTasks = async () => {
+    const res = await fetch('http://localhost:5000/tasks');
+    const data = await res.json();
+    return data;
+  }
 
   const addTask = (task) => {
     const id = Math.floor(Math.random() * 10000) + 1;
@@ -49,7 +43,7 @@ export default function App() {
         onAdd={() => setShowAddTask(!showAddTask)}
         showAdd={showAddTask}
       />
-      {showAddTask && <AddTask onAdd={addTask} />}
+      {showAddTask && <AddTask onAdd={addTask}/>}
       {tasks.length > 0 ? (
         <Tasks
           tasks={tasks}
